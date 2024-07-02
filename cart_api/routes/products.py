@@ -13,6 +13,9 @@ class Product:
         DatabaseProducts.delete_by_id(product_id)
         resp.status = falcon.HTTP_204
 
+api = falcon.App()
+product = Product()
+api.add_route('/v/products/{product_id:int}', product)
 
 # Excercise 2:
 # Products route should respond to GET and POST requests
@@ -21,7 +24,24 @@ class Product:
 
 
 class Products:
-    pass  # must have a pass line because you cannot have a "blank" class
-    # def on_get(self, req, resp):
+    def on_get(self, req, resp):
+        somelist = []
+        for product in DatabaseProducts.select():
+            somelist.append(model_to_dict(product))
+        resp.media = somelist
+        resp.status = falcon.HTTP_200
+    
+    def on_post(self, req, resp):
+        obj = req.get_media()
+        product = DatabaseProducts(
+            name = obj["name"],
+            description = obj["description"],
+            image_url = obj["image_url"],
+            price = obj["price"],
+            is_on_sale = obj["is_on_sale"],
+            sale_price = obj["sale_price"],
 
-    # def on_post(self, req, resp):
+        )
+        product.save()
+        resp.media = model_to_dict(product)
+        resp.status = falcon.HTTP_201

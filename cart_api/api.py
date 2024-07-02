@@ -12,6 +12,8 @@ api.req_options.strip_url_path_trailing_slash = True
 hb = Heartbeat()
 product = Product()
 products = Products()
+cartItem = CartItem()
+cartItems = CartItems()
 
 # Define our API's routes
 api.add_route("/heartbeat", hb)
@@ -35,3 +37,4 @@ def http405(req, resp, error, params):
 
 
 api.add_error_handler(falcon.HTTPMethodNotAllowed, http405)
+
